@@ -7,6 +7,7 @@
     "deploy": "wrangler deploy --env production",
     "dev:miniflare": "cross-env NODE_ENV=development wrangler --env dev dev --port 9999 --live-reload",
     "typecheck": "tsc",
+    "tail": "wrangler tail --env production",
     "test": "vitest --config test/vitest.config.ts run"
   },
   "dependencies": {
