@@ -53,7 +53,7 @@ export class RegistryTokens implements Authenticator {
   async createToken(
     caps: RegistryTokenCapability[],
     privateKeyString: string,
-    registryUrl: string,
+    namespaces: string[],
     expirationMinutes?: number,
     accountID?: string,
   ): Promise<string> {
@@ -63,8 +63,8 @@ export class RegistryTokens implements Authenticator {
       username: "v0",
       account_id: accountID,
       capabilities: caps,
-      aud: registryUrl,
       iat: Math.floor(Date.now() / 1000),
+      aud: namespaces,
     };
     if (expirationMinutes !== undefined) {
       tokenPayload.exp = Math.floor(Date.now() / 1000) + 60 * expirationMinutes;
@@ -164,6 +164,12 @@ export class RegistryTokens implements Authenticator {
         break;
       default:
         return { verified: false, payload: null };
+    }
+
+    const namespace = request.url.split("/")[2];
+    if (payload.aud && !payload.aud.includes(namespace)) {
+      console.warn(`verifyToken: failed jwt verification: namespace ${namespace} not in aud list: ${payload.aud}`);
+      return { verified: false, payload: null };
     }
 
     return { verified: true, payload };
