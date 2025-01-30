@@ -62,5 +62,10 @@ function decodeTime(time: string) {
   const token = await registryTokens.createToken(capabilities, privateKey, namespaces, expiry);
 
   console.log("Token:", token);
+
+  const username = namespaces.length ? namespaces[0] : "user";
+  const encoded = btoa(`${username}:${token}`);
+  console.log("Basic token:", encoded);
+
   rl.close();
 })();
