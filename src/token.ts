@@ -166,7 +166,7 @@ export class RegistryTokens implements Authenticator {
         return { verified: false, payload: null };
     }
 
-    const namespace = request.url.split("/")[2];
+    const namespace = new URL(request.url).pathname.split("/")[2];
     if (payload.aud && !payload.aud.includes(namespace)) {
       console.warn(`verifyToken: failed jwt verification: namespace ${namespace} not in aud list: ${payload.aud}`);
       return { verified: false, payload: null };
