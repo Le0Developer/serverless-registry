@@ -6,8 +6,8 @@ export type RegistryAuthProtocolTokenPayload = {
   username: string;
   account_id?: string;
   capabilities: RegistryTokenCapability[];
-  exp: number;
   aud: string;
+  exp?: number;
   iat?: number;
 };
 

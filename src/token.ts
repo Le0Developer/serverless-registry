@@ -51,11 +51,11 @@ export class RegistryTokens implements Authenticator {
   }
 
   async createToken(
-    accountID: string,
     caps: RegistryTokenCapability[],
-    expirationMinutes: number,
     privateKeyString: string,
     registryUrl: string,
+    expirationMinutes?: number,
+    accountID?: string,
   ): Promise<string> {
     const privateKey = importKeyFromBase64(privateKeyString);
     // password is the signed JWT from the tokenPayload. Clients would treat this as an opaque identifier
@@ -63,9 +63,12 @@ export class RegistryTokens implements Authenticator {
       username: "v0",
       account_id: accountID,
       capabilities: caps,
-      exp: Math.floor(Date.now() / 1000) + 60 * expirationMinutes,
       aud: registryUrl,
+      iat: Math.floor(Date.now() / 1000),
     };
+    if (expirationMinutes !== undefined) {
+      tokenPayload.exp = Math.floor(Date.now() / 1000) + 60 * expirationMinutes;
+    }
 
     const token = await jwt.sign(tokenPayload, privateKey, {
       algorithm: "ES256",
